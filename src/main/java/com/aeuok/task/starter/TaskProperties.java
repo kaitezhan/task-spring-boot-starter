@@ -1,28 +1,43 @@
 package com.aeuok.task.starter;
 
+import com.aeuok.task.ann.Task;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**
  * @author: CQ
  */
-@ConfigurationProperties("aeuok.task")
+@ConfigurationProperties("aeuok.task.global")
 public class TaskProperties {
-    private boolean debugger = false;
-    private boolean enableDefaultTransactional = false;
+    private String taskName;
+    private boolean enableTransactional;
 
-    public boolean isEnableDefaultTransactional() {
-        return enableDefaultTransactional;
+    public TaskProperties() {
+        this("",  false);
     }
 
-    public void setEnableDefaultTransactional(boolean enableDefaultTransactional) {
-        this.enableDefaultTransactional = enableDefaultTransactional;
+    public TaskProperties(String taskName, boolean enableTransactional) {
+        this.taskName = taskName;
+        this.enableTransactional = enableTransactional;
     }
 
-    public boolean isDebugger() {
-        return debugger;
+    public static TaskProperties convert(Task task) {
+        return new TaskProperties(task.value(), task.transactional());
     }
 
-    public void setDebugger(boolean debugger) {
-        this.debugger = debugger;
+    public String getTaskName() {
+        return taskName;
     }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public boolean isEnableTransactional() {
+        return enableTransactional;
+    }
+
+    public void setEnableTransactional(boolean enableTransactional) {
+        this.enableTransactional = enableTransactional;
+    }
+
 }

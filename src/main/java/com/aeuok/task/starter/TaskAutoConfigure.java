@@ -3,7 +3,6 @@ package com.aeuok.task.starter;
 import com.aeuok.task.*;
 import com.aeuok.task.ann.TaskAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureOrder;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -15,31 +14,29 @@ import org.springframework.context.annotation.Scope;
 /**
  * @author: CQ
  */
-@AutoConfigureOrder(-99)
+@AutoConfigureOrder(-22)
 @Configuration
 @EnableConfigurationProperties(TaskProperties.class)
 public class TaskAutoConfigure {
-    @Autowired
-    private TaskProperties properties;
-
 
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean(TaskRunnable.class)
-    public BindTaskContainerRunnable taskRunnable() {
+    public TaskRunnable taskRunnable() {
         return null;
     }
 
     @Bean
     @Scope("prototype")
     @ConditionalOnMissingBean(TransactionalTaskRunnable.class)
-    public BindTaskContainerRunnable transactionalTaskRunnable() {
+    public TransactionalTaskRunnable transactionalTaskRunnable() {
         return new DefaultTransactionalTaskRunnable();
     }
 
     @Bean
     @Scope("prototype")
-    public DefaultTaskContainer taskContainer() {
+    @ConditionalOnMissingBean(TaskContainer.class)
+    public TaskContainer taskContainer() {
         return new DefaultTaskContainer();
     }
 

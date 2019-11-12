@@ -5,6 +5,7 @@ import com.aeuok.task.TaskRunnable;
 import com.aeuok.task.TransactionalTaskRunnable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.aop.support.AopUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.BeanPostProcessor;
@@ -20,13 +21,8 @@ public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
     private BeanFactory beanFactory;
 
     @Override
-    public Object postProcessBeforeInitialization(Object bean, String beanName) throws BeansException {
-        return bean;
-    }
-
-    @Override
     public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
-        Field[] fields = bean.getClass().getDeclaredFields();
+        Field[] fields = AopUtils.getTargetClass(bean).getDeclaredFields();
         Task task;
         for (Field field : fields) {
             task = field.getAnnotation(Task.class);
@@ -42,6 +38,7 @@ public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
                 } else {
                     taskContainer.setObjectProvider(beanFactory.getBeanProvider(TaskRunnable.class));
                 }
+                field.setAccessible(true);
                 try {
                     field.set(bean, taskContainer);
                 } catch (IllegalAccessException e) {

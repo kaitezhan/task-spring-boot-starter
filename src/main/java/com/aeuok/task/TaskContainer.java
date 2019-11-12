@@ -8,6 +8,7 @@ import java.util.List;
  * @author: CQ
  */
 public interface TaskContainer {
+
     void execute();
 
     void setShowInfo(boolean showInfo);
@@ -15,6 +16,10 @@ public interface TaskContainer {
     void setTaskName(String taskName);
 
     void setTasks(List<TaskDefinition> tasks);
+
+    void add(TaskDefinition task);
+
+    void add(List<TaskDefinition> tasks);
 
     void setObjectProvider(ObjectProvider<? extends BindTaskContainerRunnable> objectProvider);
 }

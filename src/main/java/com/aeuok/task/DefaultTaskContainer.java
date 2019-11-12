@@ -57,10 +57,12 @@ public class DefaultTaskContainer implements TaskContainer {
         this.tasks = tasks;
     }
 
+    @Override
     public void add(TaskDefinition task) {
         tasks.add(task);
     }
 
+    @Override
     public void add(List<TaskDefinition> tasks) {
         this.tasks.addAll(tasks);
     }
@@ -68,6 +70,22 @@ public class DefaultTaskContainer implements TaskContainer {
     @Override
     public void setTaskName(String taskName) {
         this.taskName = taskName;
+    }
+
+
+    @Override
+    public void setShowInfo(boolean showInfo) {
+        this.showInfo = showInfo;
+    }
+
+
+    @Override
+    public void setObjectProvider(ObjectProvider<? extends BindTaskContainerRunnable> objectProvider) {
+        this.objectProvider = objectProvider;
+    }
+
+    public boolean isShowInfo() {
+        return showInfo;
     }
 
     public String getTaskName() {
@@ -84,23 +102,5 @@ public class DefaultTaskContainer implements TaskContainer {
 
     protected ResultHolder getResultHolder() {
         return resultHolder;
-    }
-
-    @Override
-    public void setShowInfo(boolean showInfo) {
-        this.showInfo = showInfo;
-    }
-
-    public boolean isShowInfo() {
-        return showInfo;
-    }
-
-    @Override
-    public void setObjectProvider(ObjectProvider<? extends BindTaskContainerRunnable> objectProvider) {
-        this.objectProvider = objectProvider;
-    }
-
-    public ObjectProvider<? extends BindTaskContainerRunnable> getObjectProvider() {
-        return objectProvider;
     }
 }

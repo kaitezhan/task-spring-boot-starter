@@ -10,5 +10,6 @@ public interface BindTaskContainerRunnable extends Runnable {
      * @param container 任务容器
      * @param task      任务
      */
-    void bind(DefaultTaskContainer container, TaskDefinition task);
+    void bind(TaskContainer container, TaskDefinition task);
+
 }

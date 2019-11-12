@@ -10,7 +10,6 @@ import java.lang.annotation.*;
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
-@Autowired
 public @interface Task {
     /**
      * 任务名称

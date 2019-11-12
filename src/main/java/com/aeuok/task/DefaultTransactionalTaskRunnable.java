@@ -3,6 +3,7 @@ package com.aeuok.task;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.UUID;
 import java.util.concurrent.BrokenBarrierException;
 
 /**
@@ -11,13 +12,14 @@ import java.util.concurrent.BrokenBarrierException;
 public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnable {
     private static final Logger log = LoggerFactory.getLogger(DefaultTransactionalTaskRunnable.class);
     private TaskDefinition task;
-    private DefaultTaskContainer taskContainer;
+    private TaskContainer taskContainer;
+    private String id = UUID.randomUUID().toString();
 
     @Override
     public void run() {
         String threadName = Thread.currentThread().getName();
         if (taskContainer.isShowInfo() && log.isInfoEnabled()) {
-            log.info("{}-开始执行", threadName);
+            log.info("{}-开始执行，id：{}", threadName, id);
         }
         try {
             boolean result = false;
@@ -46,7 +48,7 @@ public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnab
     }
 
     @Override
-    public void bind(DefaultTaskContainer manager, TaskDefinition task) {
+    public void bind(TaskContainer manager, TaskDefinition task) {
         this.taskContainer = manager;
         this.task = task;
     }

@@ -8,36 +8,13 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
  */
 @ConfigurationProperties("aeuok.task.global")
 public class TaskProperties {
-    private String taskName;
-    private boolean enableTransactional;
+    private String taskNamePrefix;
 
-    public TaskProperties() {
-        this("",  false);
+    public String getTaskNamePrefix() {
+        return taskNamePrefix;
     }
 
-    public TaskProperties(String taskName, boolean enableTransactional) {
-        this.taskName = taskName;
-        this.enableTransactional = enableTransactional;
+    public void setTaskNamePrefix(String taskNamePrefix) {
+        this.taskNamePrefix = taskNamePrefix;
     }
-
-    public static TaskProperties convert(Task task) {
-        return new TaskProperties(task.value(), task.transactional());
-    }
-
-    public String getTaskName() {
-        return taskName;
-    }
-
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
-    public boolean isEnableTransactional() {
-        return enableTransactional;
-    }
-
-    public void setEnableTransactional(boolean enableTransactional) {
-        this.enableTransactional = enableTransactional;
-    }
-
 }

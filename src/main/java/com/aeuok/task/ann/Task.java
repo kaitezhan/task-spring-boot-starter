@@ -1,7 +1,5 @@
 package com.aeuok.task.ann;
 
-import org.springframework.beans.factory.annotation.Autowired;
-
 import java.lang.annotation.*;
 
 /**
@@ -9,6 +7,7 @@ import java.lang.annotation.*;
  */
 @Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
+@Inherited
 @Documented
 public @interface Task {
     /**
@@ -27,4 +26,6 @@ public @interface Task {
      * @return
      */
     boolean showInfo() default false;
+
+    boolean required() default true;
 }

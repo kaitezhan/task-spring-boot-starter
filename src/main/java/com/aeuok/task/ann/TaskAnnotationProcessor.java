@@ -18,6 +18,7 @@ import javax.tools.Diagnostic;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
+import java.util.UUID;
 
 import static com.aeuok.task.Constant.*;
 
@@ -27,7 +28,6 @@ import static com.aeuok.task.Constant.*;
 @AutoService(Processor.class)
 @SupportedAnnotationTypes("com.aeuok.task.ann.Task")
 public class TaskAnnotationProcessor extends AbstractProcessor {
-    private static JCTree.JCMethodDecl flagMethod;
     private static JCTree.JCExpression returnMethodType;
     private Messager messager;
     private JavacTrees trees;
@@ -55,9 +55,6 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
                 messager.printMessage(Diagnostic.Kind.ERROR, e.getMessage());
             }
         }
-        if (null == flagMethod) {
-            flagMethod = buildFlagMethod();
-        }
     }
 
     @Override
@@ -76,7 +73,8 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
                 public void visitClassDef(JCTree.JCClassDecl jcClassDecl) {
                     super.visitClassDef(jcClassDecl);
                     if (!labeled.containsKey(typeElement)) {
-                        jcClassDecl.defs = jcClassDecl.defs.prepend(flagMethod);
+                        jcClassDecl.mods.annotations = jcClassDecl.mods.annotations
+                                .prepend(buildFlag(typeElement.asType().toString()));
                         labeled.put(typeElement, TASK_FIELD_INJECT_START);
                     }
                     try {
@@ -92,12 +90,23 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
         return true;
     }
 
-    private JCTree.JCMethodDecl buildFlagMethod() {
-        return treeMaker.MethodDef(treeMaker.Modifiers(Flags.PUBLIC), names.fromString(FLAG_METHOD_NAME), returnMethodType,
-                List.nil(), List.nil(), List.nil(), treeMaker.Block(0, List.nil()), null);
+    private JCTree.JCExpression memberAccess(String components) {
+        String[] componentArray = components.split("\\.");
+        JCTree.JCExpression expr = treeMaker.Ident(names.fromString(componentArray[0]));
+        for (int i = 1; i < componentArray.length; i++) {
+            expr = treeMaker.Select(expr, names.fromString(componentArray[i]));
+        }
+        return expr;
     }
 
-    private JCTree.JCMethodDecl generateInjectMethod(JCTree.JCVariableDecl jcVariableDecl, int index) throws Exception {
+    private JCTree.JCAnnotation buildFlag(String className) {
+        List<JCTree.JCExpression> list = List.of(
+                treeMaker.Assign(treeMaker.Ident(names.fromString("value")), memberAccess(className + ".class"))
+        );
+        return treeMaker.Annotation(memberAccess(FLAG), list);
+    }
+
+    private JCTree.JCMethodDecl generateInjectMethod(JCTree.JCVariableDecl jcVariableDecl, int index) {
         Name name = names.fromString(TASK_FIELD_INJECT_PREFIX + index);
         ListBuffer<JCTree.JCStatement> statements = new ListBuffer<>();
         statements.append(treeMaker.Exec(treeMaker.Assign(treeMaker.Select(treeMaker.Ident(names.fromString("this")), jcVariableDecl.getName()),
@@ -112,7 +121,7 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
 
     private void debugger(String message) {
         if (DEBUG) {
-            messager.printMessage(Diagnostic.Kind.NOTE, message);
+            messager.printMessage(Diagnostic.Kind.NOTE, UUID.randomUUID().toString() + "---" + message);
         }
     }
 }

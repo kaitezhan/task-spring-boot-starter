@@ -9,5 +9,10 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 public @interface Flag {
+    /**
+     * 原始类
+     *
+     * @return
+     */
     Class<?> value();
 }

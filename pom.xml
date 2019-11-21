@@ -9,6 +9,7 @@
     <packaging>jar</packaging>
     <properties>
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
+        <java.home>E:\Java\jdk8</java.home>
     </properties>
 
     <developers>
@@ -47,7 +48,7 @@
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-jdbc</artifactId>
-            <scope>compile</scope>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.guava</groupId>
@@ -58,15 +59,24 @@
             <groupId>com.google.auto.service</groupId>
             <artifactId>auto-service</artifactId>
             <version>1.0-rc6</version>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.sun</groupId>
             <artifactId>tools</artifactId>
             <version>1.8</version>
             <scope>system</scope>
-            <systemPath>E:/Java/jdk8/lib/tools.jar</systemPath>
+            <systemPath>${java.home}/lib/tools.jar</systemPath>
         </dependency>
     </dependencies>
+    <licenses>
+        <license>
+            <name>Apache 2</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>repo</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
     <build>
         <plugins>
             <plugin>

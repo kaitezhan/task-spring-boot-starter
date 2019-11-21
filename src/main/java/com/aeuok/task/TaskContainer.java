@@ -22,18 +22,39 @@ public class TaskContainer {
     private CountDownLatch countDownLatch;
     private ResultHolder resultHolder = new ResultHolder();
     private ExecutorService pool;
-    private boolean transactional;
-    private String taskName;
-    private boolean showInfo;
-    private boolean executeFlag = false;
     private String taskNamePrefix;
+
+    /**
+     * 这几个属性可以通过注解注入
+     *
+     * @see com.aeuok.task.ann.Task
+     */
+    /**
+     * 事务
+     */
+    private boolean transactional;
+    /**
+     * 显示信息
+     */
+    private boolean showInfo;
+    /**
+     * 任务名称
+     */
+    private String taskName;
+    /**
+     * 指定bean
+     */
+    private String taskBeanName;
+    /**
+     * 等待
+     */
+    private boolean wait;
 
     public TaskContainer(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 
     public synchronized void execute() {
-        executeFlag = true;
         if (showInfo && log.isInfoEnabled()) {
             log.info("任务【{}】开始执行", getTaskName());
         }
@@ -46,7 +67,9 @@ public class TaskContainer {
                     new LinkedBlockingQueue<>(), new ThreadFactoryBuilder().setNameFormat(getTaskName() + "-%d").build());
             for (TaskDefinition task : tasks) {
                 BindTaskContainerRunnable runnable;
-                if (transactional) {
+                if (null != taskBeanName && taskBeanName.length() > 0) {
+                    runnable = (BindTaskContainerRunnable) beanFactory.getBean(taskBeanName);
+                } else if (transactional) {
                     runnable = beanFactory.getBean(TransactionalTaskRunnable.class);
                 } else {
                     runnable = beanFactory.getBean(TaskRunnable.class);
@@ -54,18 +77,18 @@ public class TaskContainer {
                 runnable.bind(this, task);
                 pool.execute(runnable);
             }
-            try {
-                countDownLatch.await();
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            } finally {
-                pool.shutdown();
-                tasks.clear();
-                executeFlag = false;
-                if (showInfo && log.isInfoEnabled()) {
-                    log.info("{}-执行完成，用时{}s", getTaskName(), (System.currentTimeMillis() - startTime) / 1000d);
+            if (wait) {
+                try {
+                    countDownLatch.await();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
+            pool.shutdown();
+            if (showInfo && wait && log.isInfoEnabled()) {
+                log.info("【{}】-执行完成，用时{}s", getTaskName(), (System.currentTimeMillis() - startTime) / 1000d);
+            }
+
         }
     }
 
@@ -73,11 +96,7 @@ public class TaskContainer {
      * 清除任务
      */
     public void clear() {
-        if (executeFlag) {
-            log.error("任务【{}】执行中，无法清除", getTaskName());
-        } else {
-            tasks.clear();
-        }
+        tasks.clear();
     }
 
     public void setTasks(List<TaskDefinition> tasks) {
@@ -92,12 +111,24 @@ public class TaskContainer {
         this.tasks.addAll(tasks);
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
+    public void setTransactional(boolean transactional) {
+        this.transactional = transactional;
     }
 
     public void setShowInfo(boolean showInfo) {
         this.showInfo = showInfo;
+    }
+
+    public void setTaskName(String taskName) {
+        this.taskName = taskName;
+    }
+
+    public void setTaskBeanName(String taskBeanName) {
+        this.taskBeanName = taskBeanName;
+    }
+
+    public void setWait(boolean wait) {
+        this.wait = wait;
     }
 
     public void setTaskNamePrefix(String taskNamePrefix) {
@@ -112,10 +143,6 @@ public class TaskContainer {
         return null == taskNamePrefix ? taskName : taskNamePrefix + taskName;
     }
 
-    public void setTransactional(boolean transactional) {
-        this.transactional = transactional;
-    }
-
     protected CyclicBarrier getCyclicBarrier() {
         return cyclicBarrier;
     }
@@ -126,5 +153,13 @@ public class TaskContainer {
 
     protected ResultHolder getResultHolder() {
         return resultHolder;
+    }
+
+    protected boolean isWait() {
+        return wait;
+    }
+
+    protected int taskSize() {
+        return tasks.size();
     }
 }

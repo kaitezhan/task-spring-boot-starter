@@ -1,9 +1,6 @@
 package com.aeuok.task.starter;
 
-import com.aeuok.task.DefaultTransactionalTaskRunnable;
-import com.aeuok.task.TaskContainer;
-import com.aeuok.task.TaskRunnable;
-import com.aeuok.task.TransactionalTaskRunnable;
+import com.aeuok.task.*;
 import com.aeuok.task.ann.TaskAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,8 +25,7 @@ public class TaskAutoConfigure {
     @Scope("prototype")
     @ConditionalOnMissingBean(TaskRunnable.class)
     public TaskRunnable taskRunnable() {
-        //TODO 默认的无事务处理
-        return null;
+        return new DefaultTaskRunnable();
     }
 
     @Bean

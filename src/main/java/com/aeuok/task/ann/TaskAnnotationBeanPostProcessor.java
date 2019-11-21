@@ -29,16 +29,12 @@ public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
             return bean;
         }
         Class<?> realClass = flag.value();
-        if (log.isDebugEnabled()) {
-            log.debug("正在为【{}】注入 TaskContainer");
-        }
+        log.info("正在为【{}】注入 TaskContainer", realClass.getName());
         for (int index = Constant.TASK_FIELD_INJECT_START; ; index++) {
             try {
                 Method injectMethod = realClass.getDeclaredMethod(Constant.TASK_FIELD_INJECT_PREFIX + index, TaskContainer.class);
                 TaskContainer taskContainer = beanFactory.getBean(TaskContainer.class);
                 taskContainer.setTaskNamePrefix(taskNamePrefix);
-                //TODO 这里要在处理注解时注入
-                taskContainer.setTransactional(true);
                 injectMethod.invoke(bean, taskContainer);
             } catch (NoSuchMethodException e) {
                 break;

@@ -41,13 +41,15 @@ public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnab
                 throw new RuntimeException(taskContainer.getTaskName() + " 任务失败");
             }
         } finally {
-            taskContainer.getCountDownLatch().countDown();
+            if (taskContainer.isWait()) {
+                taskContainer.getCountDownLatch().countDown();
+            }
         }
     }
 
     @Override
-    public void bind(TaskContainer manager, TaskDefinition task) {
-        this.taskContainer = manager;
+    public void bind(TaskContainer taskContainer, TaskDefinition task) {
+        this.taskContainer = taskContainer;
         this.task = task;
     }
 }

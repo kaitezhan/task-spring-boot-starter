@@ -1,6 +1,5 @@
 package com.aeuok.task.starter;
 
-import com.aeuok.task.ann.Task;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 /**

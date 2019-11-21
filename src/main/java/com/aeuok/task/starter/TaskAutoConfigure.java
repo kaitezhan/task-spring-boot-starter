@@ -28,6 +28,7 @@ public class TaskAutoConfigure {
     @Scope("prototype")
     @ConditionalOnMissingBean(TaskRunnable.class)
     public TaskRunnable taskRunnable() {
+        //TODO 默认的无事务处理
         return null;
     }
 

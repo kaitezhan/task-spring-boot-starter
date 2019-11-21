@@ -48,7 +48,7 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         messager = processingEnv.getMessager();
-        messager.printMessage(Diagnostic.Kind.WARNING, "【task-spring-boot-starter】可能与【Lombok】产生冲突导致编译失败..." + new Date());
+        messager.printMessage(Diagnostic.Kind.NOTE, "【task-spring-boot-starter】可能与【Lombok】产生冲突导致编译失败..." + new Date());
         trees = JavacTrees.instance(processingEnv);
         Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
         treeMaker = TreeMaker.instance(context);

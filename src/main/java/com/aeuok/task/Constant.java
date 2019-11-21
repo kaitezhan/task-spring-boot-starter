@@ -13,4 +13,5 @@ public class Constant {
     public static final int TASK_FIELD_INJECT_START = 0;
     public static final String VOID = "com.sun.tools.javac.code.Type$JCVoidType";
     public static final String FLAG = "com.aeuok.task.ann.Flag";
+    public static final String TASK_CONTAINER_NAME = "com.aeuok.task.TaskContainer";
 }

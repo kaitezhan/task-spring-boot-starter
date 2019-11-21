@@ -32,6 +32,7 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     private static JCTree.JCExpression stringType;
     private static JCTree.JCLiteral trueVal;
     private static JCTree.JCLiteral falseVal;
+
     private Messager messager;
     private JavacTrees trees;
     private TreeMaker treeMaker;
@@ -78,7 +79,8 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Task.class);
         Map<Element, Integer> labeled = new HashMap<>(16);
         for (Element fieldElement : set) {
-            if (!fieldElement.getKind().isField()) {
+            if (!fieldElement.getKind().isField() ||
+                    !TASK_CONTAINER_NAME.equals(fieldElement.asType().toString())) {
                 continue;
             }
             Element typeElement = fieldElement.getEnclosingElement();

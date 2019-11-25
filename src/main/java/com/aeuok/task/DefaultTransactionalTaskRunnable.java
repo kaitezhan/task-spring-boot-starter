@@ -11,7 +11,7 @@ import java.util.concurrent.BrokenBarrierException;
 public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnable {
     private static final Logger log = LoggerFactory.getLogger(DefaultTransactionalTaskRunnable.class);
     private TaskDefinition task;
-    private TaskContainer taskContainer;
+    private TaskFactory.TaskContainer taskContainer;
 
     @Override
     public void run() {
@@ -48,7 +48,7 @@ public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnab
     }
 
     @Override
-    public void bind(TaskContainer taskContainer, TaskDefinition task) {
+    public void bind(TaskFactory.TaskContainer taskContainer, TaskDefinition task) {
         this.taskContainer = taskContainer;
         this.task = task;
     }

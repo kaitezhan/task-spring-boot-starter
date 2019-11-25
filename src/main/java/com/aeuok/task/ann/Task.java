@@ -12,10 +12,11 @@ import java.lang.annotation.*;
 public @interface Task {
     /**
      * 任务名称
+     * 默认 {className}@{filedName}
      *
      * @return
      */
-    String value() default "";
+    String name() default "";
 
     /**
      * 是否支持{@link org.springframework.transaction.annotation.Transactional}

@@ -77,10 +77,10 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
         Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Task.class);
-        Map<Element, Integer> labeled = new HashMap<>(16);
+        Map<Element, Integer> labeled = new HashMap<>(8);
         for (Element fieldElement : set) {
             if (!fieldElement.getKind().isField() ||
-                    !TASK_CONTAINER_NAME.equals(fieldElement.asType().toString())) {
+                    !TASK_FACTORY_NAME.equals(fieldElement.asType().toString())) {
                 continue;
             }
             Element typeElement = fieldElement.getEnclosingElement();
@@ -99,9 +99,8 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
                     try {
                         Integer index = labeled.get(typeElement);
                         jcClassDecl.defs = jcClassDecl.defs.prepend(
-                                generateInjectMethod(jcVariableDecl,
-                                        fieldElement.getAnnotation(Task.class),
-                                        index)
+                                generateInjectMethod(typeElement.getSimpleName().toString(), jcVariableDecl,
+                                        fieldElement.getAnnotation(Task.class), index)
                         );
                         labeled.put(typeElement, ++index);
                     } catch (Exception e) {
@@ -130,13 +129,15 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     }
 
     /**
-     * 用于注入{@link com.aeuok.task.TaskContainer}
+     * 用于注入{@link com.aeuok.task.TaskFactory.TaskContainer}
      *
      * @param jcVariableDecl
      * @param index
+     * @param className
      * @return
      */
-    private JCTree.JCMethodDecl generateInjectMethod(JCTree.JCVariableDecl jcVariableDecl, Task task, int index) {
+    private JCTree.JCMethodDecl generateInjectMethod(String className, JCTree.JCVariableDecl jcVariableDecl,
+                                                     Task task, int index) {
         Name name = names.fromString(TASK_FIELD_INJECT_PREFIX + index);
         String thisField = "this." + jcVariableDecl.name.toString();
         ListBuffer<JCTree.JCStatement> statements = new ListBuffer<>();
@@ -170,7 +171,8 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
                                 treeMaker.Apply(
                                         List.of(stringType),
                                         memberAccess(thisField + ".setTaskName"),
-                                        List.of(treeMaker.Literal(task.value())))))
+                                        List.of(treeMaker.Literal(task.name().length() == 0 ?
+                                                className + "@" + jcVariableDecl.name.toString() : task.name())))))
                 .append(
                         treeMaker.Exec(
                                 treeMaker.Apply(

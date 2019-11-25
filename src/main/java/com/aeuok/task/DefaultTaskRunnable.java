@@ -9,10 +9,10 @@ import org.slf4j.LoggerFactory;
 public class DefaultTaskRunnable implements TaskRunnable {
     private static final Logger log = LoggerFactory.getLogger(DefaultTransactionalTaskRunnable.class);
     private TaskDefinition task;
-    private TaskContainer taskContainer;
+    private TaskFactory.TaskContainer taskContainer;
 
     @Override
-    public void bind(TaskContainer container, TaskDefinition task) {
+    public void bind(TaskFactory.TaskContainer container, TaskDefinition task) {
         this.task = task;
         this.taskContainer = container;
     }

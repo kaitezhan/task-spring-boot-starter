@@ -3,7 +3,6 @@ package com.aeuok.task.starter;
 import com.aeuok.task.*;
 import com.aeuok.task.ann.TaskAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
@@ -17,9 +16,6 @@ import org.springframework.context.annotation.Scope;
 @Configuration
 @EnableConfigurationProperties(TaskProperties.class)
 public class TaskAutoConfigure {
-
-    @Autowired
-    private TaskProperties properties;
 
     @Bean
     @Scope("prototype")
@@ -35,18 +31,16 @@ public class TaskAutoConfigure {
         return new DefaultTransactionalTaskRunnable();
     }
 
-    @Bean
+    @Bean(Constant.DEFAULT_TASK_FACTORY_BEAN_NAME)
     @Scope("prototype")
-    @ConditionalOnMissingBean(TaskContainer.class)
-    public TaskContainer taskContainer(BeanFactory beanFactory) {
-        return new TaskContainer(beanFactory);
+    public TaskFactory taskFactory(BeanFactory beanFactory) {
+        return new TaskFactory(beanFactory);
     }
 
     @Bean
     public TaskAnnotationBeanPostProcessor taskAnnotationBeanPostProcessor(ConfigurableBeanFactory configurableBeanFactory,
                                                                            BeanFactory beanFactory) {
         TaskAnnotationBeanPostProcessor processor = new TaskAnnotationBeanPostProcessor(beanFactory);
-        processor.setTaskNamePrefix(properties.getTaskNamePrefix());
         configurableBeanFactory.addBeanPostProcessor(processor);
         return processor;
     }

@@ -30,14 +30,14 @@ public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnab
                 log.info("【{}】-执行结果: {}", threadName, result ? "成功" : "失败");
             }
             if (!result) {
-                taskContainer.getResultHolder().setErrorFlag(true);
+                taskContainer.getResultHolder().setError(true);
             }
             try {
                 taskContainer.getCyclicBarrier().await();
             } catch (InterruptedException | BrokenBarrierException e) {
                 e.printStackTrace();
             }
-            if (taskContainer.getResultHolder().isErrorFlag()) {
+            if (taskContainer.getResultHolder().isError()) {
                 throw new RuntimeException(taskContainer.getTaskName() + " 任务失败");
             }
         } finally {

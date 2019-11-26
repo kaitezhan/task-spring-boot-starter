@@ -4,13 +4,13 @@ package com.aeuok.task;
  * @author: CQ
  */
 public class ResultHolder {
-    private boolean errorFlag = false;
+    private boolean error = false;
 
-    public boolean isErrorFlag() {
-        return errorFlag;
+    public boolean isError() {
+        return error;
     }
 
-    public void setErrorFlag(boolean errorFlag) {
-        this.errorFlag = errorFlag;
+    public void setError(boolean error) {
+        this.error = error;
     }
 }

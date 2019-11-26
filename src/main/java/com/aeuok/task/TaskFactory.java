@@ -50,6 +50,12 @@ public class TaskFactory {
         return new TaskContainer();
     }
 
+    public TaskContainer get(TaskDefinition task) {
+        TaskContainer taskContainer = new TaskContainer();
+        taskContainer.add(task);
+        return taskContainer;
+    }
+
     public TaskContainer get(List<TaskDefinition> tasks) {
         return new TaskContainer(tasks);
     }
@@ -74,7 +80,11 @@ public class TaskFactory {
         this.wait = wait;
     }
 
+
     public class TaskContainer {
+        private Boolean privateShowInfo;
+        private String privateTaskName;
+        private Boolean privateWait;
         private List<TaskDefinition> tasks;
         private CyclicBarrier cyclicBarrier;
         private CountDownLatch countDownLatch;
@@ -91,7 +101,7 @@ public class TaskFactory {
         }
 
         public void execute() {
-            if (showInfo && log.isInfoEnabled()) {
+            if (isShowInfo() && log.isInfoEnabled()) {
                 log.info("任务【{}】开始执行", getTaskName());
             }
             long startTime = System.currentTimeMillis();
@@ -113,7 +123,7 @@ public class TaskFactory {
                     runnable.bind(this, task);
                     pool.execute(runnable);
                 }
-                if (wait) {
+                if (isWait()) {
                     try {
                         countDownLatch.await();
                     } catch (InterruptedException e) {
@@ -121,7 +131,7 @@ public class TaskFactory {
                     }
                 }
                 pool.shutdown();
-                if (showInfo && wait && log.isInfoEnabled()) {
+                if (isShowInfo() && isWait() && log.isInfoEnabled()) {
                     log.info("【{}】-执行完成，用时{}s", getTaskName(), (System.currentTimeMillis() - startTime) / 1000d);
                 }
 
@@ -151,13 +161,31 @@ public class TaskFactory {
             return this;
         }
 
+        public TaskContainer setShowInfo(Boolean showInfo) {
+            this.privateShowInfo = showInfo;
+            return this;
+        }
+
+        public TaskContainer setTaskName(String taskName) {
+            this.privateTaskName = taskName;
+            return this;
+        }
+
+        public TaskContainer setWait(Boolean wait) {
+            this.privateWait = wait;
+            return this;
+        }
 
         public boolean isShowInfo() {
-            return showInfo;
+            return null == privateShowInfo ? showInfo : privateShowInfo;
         }
 
         public String getTaskName() {
-            return taskName;
+            return null == privateTaskName ? taskName : privateTaskName;
+        }
+
+        public boolean isWait() {
+            return null == privateWait ? wait : privateWait;
         }
 
         public CyclicBarrier getCyclicBarrier() {
@@ -172,9 +200,6 @@ public class TaskFactory {
             return resultHolder;
         }
 
-        public boolean isWait() {
-            return wait;
-        }
 
     }
 }

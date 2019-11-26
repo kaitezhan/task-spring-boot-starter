@@ -9,7 +9,6 @@
     <packaging>jar</packaging>
     <properties>
         <spring-boot.version>2.2.1.RELEASE</spring-boot.version>
-        <java.home>E:\Java\jdk8</java.home>
     </properties>
 
     <developers>
@@ -67,6 +66,7 @@
             <version>1.8</version>
             <scope>system</scope>
             <systemPath>${java.home}/lib/tools.jar</systemPath>
+            <optional>true</optional>
         </dependency>
     </dependencies>
     <licenses>

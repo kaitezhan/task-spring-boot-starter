@@ -16,7 +16,6 @@ import java.lang.reflect.Method;
 public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
     private static final Logger log = LoggerFactory.getLogger(TaskAnnotationBeanPostProcessor.class);
     private BeanFactory beanFactory;
-    private String taskNamePrefix;
 
     public TaskAnnotationBeanPostProcessor(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
@@ -43,9 +42,5 @@ public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
             }
         }
         return bean;
-    }
-
-    public void setTaskNamePrefix(String taskNamePrefix) {
-        this.taskNamePrefix = taskNamePrefix;
     }
 }

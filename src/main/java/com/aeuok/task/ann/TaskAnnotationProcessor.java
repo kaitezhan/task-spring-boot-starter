@@ -76,14 +76,25 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Task.class);
+        Set<? extends Element> set = new HashSet<>();
+        set.addAll((Collection) roundEnv.getElementsAnnotatedWith(Task.class));
+        for (Element fieldElement : set) {
+            if (!fieldElement.getKind().isField()) {
+                AnnotationSupport.add(fieldElement);
+            }
+        }
+        AnnotationSupport.getSupportElement().forEach(support -> {
+            set.addAll((Collection) roundEnv.getElementsAnnotatedWith((TypeElement) support));
+        });
         Map<Element, Integer> labeled = new HashMap<>(8);
         for (Element fieldElement : set) {
             if (!fieldElement.getKind().isField() ||
                     !TASK_FACTORY_NAME.equals(fieldElement.asType().toString())) {
                 continue;
             }
+            debugger(fieldElement.getSimpleName().toString());
             Element typeElement = fieldElement.getEnclosingElement();
+            debugger(typeElement.getSimpleName().toString());
             JCTree jcTree = trees.getTree(typeElement);
             JCTree.JCVariableDecl jcVariableDecl = (JCTree.JCVariableDecl) trees.getTree(fieldElement);
             jcTree.accept(new TreeTranslator() {
@@ -138,6 +149,10 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
      */
     private JCTree.JCMethodDecl generateInjectMethod(String className, JCTree.JCVariableDecl jcVariableDecl,
                                                      Task task, int index) {
+        //TODO  直接通过 jcVariableDecl  取注解
+        jcVariableDecl.mods.annotations.forEach(jcAnnotation -> {
+            debugger(jcAnnotation.attribute.toString());
+        });
         Name name = names.fromString(TASK_FIELD_INJECT_PREFIX + index);
         String thisField = "this." + jcVariableDecl.name.toString();
         ListBuffer<JCTree.JCStatement> statements = new ListBuffer<>();
@@ -205,6 +220,12 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
      * @param message
      */
     private void debugger(String message) {
+        if (DEBUG) {
+            messager.printMessage(Diagnostic.Kind.NOTE, UUID.randomUUID().toString() + "---" + message);
+        }
+    }
+
+    private void debugger(int message) {
         if (DEBUG) {
             messager.printMessage(Diagnostic.Kind.NOTE, UUID.randomUUID().toString() + "---" + message);
         }

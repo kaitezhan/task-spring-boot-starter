@@ -1,6 +1,5 @@
 package com.aeuok.task;
 
-import com.google.common.util.concurrent.ThreadFactoryBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -199,7 +198,7 @@ public class TaskFactory {
         public ResultHolder getResultHolder() {
             return resultHolder;
         }
-
-
     }
+
+
 }

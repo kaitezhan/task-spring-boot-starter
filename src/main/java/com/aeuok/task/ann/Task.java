@@ -5,8 +5,8 @@ import java.lang.annotation.*;
 /**
  * @author: CQ
  */
-@Target(ElementType.FIELD)
-@Retention(RetentionPolicy.SOURCE)
+@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
 public @interface Task {

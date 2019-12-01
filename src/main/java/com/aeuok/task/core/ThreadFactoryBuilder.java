@@ -1,4 +1,4 @@
-package com.aeuok.task;
+package com.aeuok.task.core;
 
 import java.lang.Thread.UncaughtExceptionHandler;
 import java.util.Locale;

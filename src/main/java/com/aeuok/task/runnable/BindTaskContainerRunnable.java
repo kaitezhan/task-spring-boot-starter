@@ -1,6 +1,7 @@
-package com.aeuok.task;
+package com.aeuok.task.runnable;
 
 import com.aeuok.task.core.TaskContainerFactory.TaskContainer;
+import com.aeuok.task.core.TaskDefinition;
 
 /**
  * @author: CQ

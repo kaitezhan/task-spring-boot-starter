@@ -1,4 +1,4 @@
-package com.aeuok.task;
+package com.aeuok.task.runnable;
 
 import org.springframework.transaction.annotation.Transactional;
 

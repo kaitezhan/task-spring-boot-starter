@@ -1,5 +1,7 @@
 package com.aeuok.task.ann;
 
+import com.aeuok.task.runnable.BindTaskContainerRunnable;
+
 import java.lang.annotation.*;
 
 /**
@@ -34,7 +36,7 @@ public @interface Task {
     boolean showInfo() default false;
 
     /**
-     * 根据beanName注入 {@link com.aeuok.task.BindTaskContainerRunnable}
+     * 根据beanName注入 {@link BindTaskContainerRunnable}
      *
      * @return
      */

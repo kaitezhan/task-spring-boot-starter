@@ -1,6 +1,7 @@
-package com.aeuok.task;
+package com.aeuok.task.runnable;
 
 import com.aeuok.task.core.TaskContainerFactory;
+import com.aeuok.task.core.TaskDefinition;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

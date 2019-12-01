@@ -14,7 +14,7 @@
 | name| ""|任务名称,默认 {className}@{filedName}|
 | transactional|false|是否支持org.springframework.transaction.annotation.Transactional|
 | showInfo|false|是否显示信息|
-| taskBeanName|""|不为空时根据beanName注入 com.aeuok.task.BindTaskContainerRunnable|
+| taskBeanName|""|不为空时根据beanName注入 com.aeuok.task.runnable.BindTaskContainerRunnable|
 | waitTask|true|是否任务间互相等待|
 ### `TaskDefinition`
         /**

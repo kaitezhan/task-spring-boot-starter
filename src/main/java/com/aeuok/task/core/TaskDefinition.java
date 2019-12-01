@@ -1,4 +1,4 @@
-package com.aeuok.task;
+package com.aeuok.task.core;
 
 /**
  * @author: CQ

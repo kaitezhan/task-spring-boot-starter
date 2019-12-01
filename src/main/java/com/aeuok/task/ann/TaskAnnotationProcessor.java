@@ -9,8 +9,8 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
-import com.sun.tools.javac.util.*;
 import com.sun.tools.javac.util.List;
+import com.sun.tools.javac.util.*;
 
 import javax.annotation.processing.*;
 import javax.lang.model.SourceVersion;
@@ -25,7 +25,7 @@ import static com.aeuok.task.Constant.*;
  * @author: CQ
  */
 @AutoService(Processor.class)
-@SupportedAnnotationTypes("com.aeuok.task.ann.Task")
+@SupportedAnnotationTypes({"com.aeuok.task.ann.Task"})
 public class TaskAnnotationProcessor extends AbstractProcessor {
     private static JCTree.JCExpression returnMethodType;
     private static JCTree.JCExpression booleanType;
@@ -76,25 +76,14 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
 
     @Override
     public boolean process(Set<? extends TypeElement> annotations, RoundEnvironment roundEnv) {
-        Set<? extends Element> set = new HashSet<>();
-        set.addAll((Collection) roundEnv.getElementsAnnotatedWith(Task.class));
-        for (Element fieldElement : set) {
-            if (!fieldElement.getKind().isField()) {
-                AnnotationSupport.add(fieldElement);
-            }
-        }
-        AnnotationSupport.getSupportElement().forEach(support -> {
-            set.addAll((Collection) roundEnv.getElementsAnnotatedWith((TypeElement) support));
-        });
+        Set<? extends Element> set = roundEnv.getElementsAnnotatedWith(Task.class);
         Map<Element, Integer> labeled = new HashMap<>(8);
         for (Element fieldElement : set) {
             if (!fieldElement.getKind().isField() ||
                     !TASK_FACTORY_NAME.equals(fieldElement.asType().toString())) {
                 continue;
             }
-            debugger(fieldElement.getSimpleName().toString());
             Element typeElement = fieldElement.getEnclosingElement();
-            debugger(typeElement.getSimpleName().toString());
             JCTree jcTree = trees.getTree(typeElement);
             JCTree.JCVariableDecl jcVariableDecl = (JCTree.JCVariableDecl) trees.getTree(fieldElement);
             jcTree.accept(new TreeTranslator() {
@@ -115,7 +104,7 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
                         );
                         labeled.put(typeElement, ++index);
                     } catch (Exception e) {
-                        messager.printMessage(Diagnostic.Kind.WARNING, e.getMessage());
+                        messager.printMessage(Diagnostic.Kind.ERROR, e.getMessage());
                     }
                 }
             });
@@ -149,10 +138,6 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
      */
     private JCTree.JCMethodDecl generateInjectMethod(String className, JCTree.JCVariableDecl jcVariableDecl,
                                                      Task task, int index) {
-        //TODO  直接通过 jcVariableDecl  取注解
-        jcVariableDecl.mods.annotations.forEach(jcAnnotation -> {
-            debugger(jcAnnotation.attribute.toString());
-        });
         Name name = names.fromString(TASK_FIELD_INJECT_PREFIX + index);
         String thisField = "this." + jcVariableDecl.name.toString();
         ListBuffer<JCTree.JCStatement> statements = new ListBuffer<>();

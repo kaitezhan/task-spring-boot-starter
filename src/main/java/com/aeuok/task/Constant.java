@@ -8,7 +8,7 @@ public class Constant {
 
     }
 
-    public static final boolean DEBUG = true;
+    public static final boolean DEBUG = false;
     public static final String DEFAULT_TASK_FACTORY_BEAN_NAME = "cqTaskFactory";
     public static final String TASK_FIELD_INJECT_PREFIX = "INJECT$t_a_s_k$";
     public static final int TASK_FIELD_INJECT_START = 0;

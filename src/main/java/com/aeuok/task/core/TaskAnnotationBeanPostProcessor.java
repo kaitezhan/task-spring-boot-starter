@@ -1,7 +1,7 @@
-package com.aeuok.task.ann;
+package com.aeuok.task.core;
 
 import com.aeuok.task.Constant;
-import com.aeuok.task.TaskFactory;
+import com.aeuok.task.ann.Flag;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeansException;
@@ -28,11 +28,11 @@ public class TaskAnnotationBeanPostProcessor implements BeanPostProcessor {
             return bean;
         }
         Class<?> realClass = flag.value();
-        log.info("正在为【{}】注入 TaskFactory", realClass.getName());
+        log.info("正在为【{}】注入 TaskContainerFactory", realClass.getName());
         for (int index = Constant.TASK_FIELD_INJECT_START; ; index++) {
             try {
-                Method injectMethod = realClass.getDeclaredMethod(Constant.TASK_FIELD_INJECT_PREFIX + index, TaskFactory.class);
-                TaskFactory taskFactory = beanFactory.getBean(Constant.DEFAULT_TASK_FACTORY_BEAN_NAME, TaskFactory.class);
+                Method injectMethod = realClass.getDeclaredMethod(Constant.TASK_FIELD_INJECT_PREFIX + index, TaskContainerFactory.class);
+                TaskContainerFactory taskFactory = beanFactory.getBean(Constant.DEFAULT_TASK_FACTORY_BEAN_NAME, TaskContainerFactory.class);
                 injectMethod.invoke(bean, taskFactory);
             } catch (NoSuchMethodException e) {
                 break;

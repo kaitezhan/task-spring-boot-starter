@@ -1,4 +1,4 @@
-package com.aeuok.task.starter;
+package com.aeuok.task.core;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 

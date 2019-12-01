@@ -1,7 +1,6 @@
-package com.aeuok.task.starter;
+package com.aeuok.task.core;
 
 import com.aeuok.task.*;
-import com.aeuok.task.ann.TaskAnnotationBeanPostProcessor;
 import org.springframework.beans.factory.BeanFactory;
 import org.springframework.beans.factory.config.ConfigurableBeanFactory;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
@@ -33,8 +32,8 @@ public class TaskAutoConfigure {
 
     @Bean(Constant.DEFAULT_TASK_FACTORY_BEAN_NAME)
     @Scope("prototype")
-    public TaskFactory taskFactory(BeanFactory beanFactory) {
-        return new TaskFactory(beanFactory);
+    public TaskContainerFactory taskFactory(BeanFactory beanFactory) {
+        return new TaskContainerFactory(beanFactory);
     }
 
     @Bean

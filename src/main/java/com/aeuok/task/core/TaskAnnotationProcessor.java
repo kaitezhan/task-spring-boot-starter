@@ -1,5 +1,6 @@
-package com.aeuok.task.ann;
+package com.aeuok.task.core;
 
+import com.aeuok.task.ann.Task;
 import com.google.auto.service.AutoService;
 import com.sun.tools.javac.api.JavacTrees;
 import com.sun.tools.javac.code.Flags;
@@ -9,7 +10,6 @@ import com.sun.tools.javac.processing.JavacProcessingEnvironment;
 import com.sun.tools.javac.tree.JCTree;
 import com.sun.tools.javac.tree.TreeMaker;
 import com.sun.tools.javac.tree.TreeTranslator;
-import com.sun.tools.javac.util.List;
 import com.sun.tools.javac.util.*;
 
 import javax.annotation.processing.*;
@@ -17,7 +17,10 @@ import javax.lang.model.SourceVersion;
 import javax.lang.model.element.Element;
 import javax.lang.model.element.TypeElement;
 import javax.tools.Diagnostic;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Set;
+import java.util.UUID;
 
 import static com.aeuok.task.Constant.*;
 
@@ -48,7 +51,6 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     public synchronized void init(ProcessingEnvironment processingEnv) {
         super.init(processingEnv);
         messager = processingEnv.getMessager();
-        messager.printMessage(Diagnostic.Kind.NOTE, "【task-spring-boot-starter】可能与【Lombok】产生冲突导致编译失败..." + new Date());
         trees = JavacTrees.instance(processingEnv);
         Context context = ((JavacProcessingEnvironment) processingEnv).getContext();
         treeMaker = TreeMaker.instance(context);
@@ -129,7 +131,7 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
     }
 
     /**
-     * 用于注入{@link com.aeuok.task.TaskFactory.TaskContainer}
+     * 用于注入{@link TaskContainerFactory.TaskContainer}
      *
      * @param jcVariableDecl
      * @param index
@@ -199,6 +201,15 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
         );
     }
 
+    private JCTree.JCExpression memberAccess(String components) {
+        String[] componentArray = components.split("\\.");
+        JCTree.JCExpression expr = treeMaker.Ident(names.fromString(componentArray[0]));
+        for (int i = 1; i < componentArray.length; i++) {
+            expr = treeMaker.Select(expr, names.fromString(componentArray[i]));
+        }
+        return expr;
+    }
+
     /**
      * 调试使用
      *
@@ -214,14 +225,5 @@ public class TaskAnnotationProcessor extends AbstractProcessor {
         if (DEBUG) {
             messager.printMessage(Diagnostic.Kind.NOTE, UUID.randomUUID().toString() + "---" + message);
         }
-    }
-
-    private JCTree.JCExpression memberAccess(String components) {
-        String[] componentArray = components.split("\\.");
-        JCTree.JCExpression expr = treeMaker.Ident(names.fromString(componentArray[0]));
-        for (int i = 1; i < componentArray.length; i++) {
-            expr = treeMaker.Select(expr, names.fromString(componentArray[i]));
-        }
-        return expr;
     }
 }

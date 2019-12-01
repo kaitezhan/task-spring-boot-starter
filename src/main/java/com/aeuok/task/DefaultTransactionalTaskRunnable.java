@@ -1,5 +1,6 @@
 package com.aeuok.task;
 
+import com.aeuok.task.core.TaskContainerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -11,7 +12,7 @@ import java.util.concurrent.BrokenBarrierException;
 public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnable {
     private static final Logger log = LoggerFactory.getLogger(DefaultTransactionalTaskRunnable.class);
     private TaskDefinition task;
-    private TaskFactory.TaskContainer taskContainer;
+    private TaskContainerFactory.TaskContainer taskContainer;
 
     @Override
     public void run() {
@@ -48,7 +49,7 @@ public class DefaultTransactionalTaskRunnable implements TransactionalTaskRunnab
     }
 
     @Override
-    public void bind(TaskFactory.TaskContainer taskContainer, TaskDefinition task) {
+    public void bind(TaskContainerFactory.TaskContainer taskContainer, TaskDefinition task) {
         this.taskContainer = taskContainer;
         this.task = task;
     }

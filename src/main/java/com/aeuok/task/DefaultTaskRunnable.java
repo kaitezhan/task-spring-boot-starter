@@ -1,5 +1,6 @@
 package com.aeuok.task;
 
+import com.aeuok.task.core.TaskContainerFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -9,10 +10,10 @@ import org.slf4j.LoggerFactory;
 public class DefaultTaskRunnable implements TaskRunnable {
     private static final Logger log = LoggerFactory.getLogger(DefaultTransactionalTaskRunnable.class);
     private TaskDefinition task;
-    private TaskFactory.TaskContainer taskContainer;
+    private TaskContainerFactory.TaskContainer taskContainer;
 
     @Override
-    public void bind(TaskFactory.TaskContainer container, TaskDefinition task) {
+    public void bind(TaskContainerFactory.TaskContainer container, TaskDefinition task) {
         this.task = task;
         this.taskContainer = container;
     }

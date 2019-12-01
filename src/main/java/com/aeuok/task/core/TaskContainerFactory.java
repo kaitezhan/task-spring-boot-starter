@@ -1,5 +1,6 @@
-package com.aeuok.task;
+package com.aeuok.task.core;
 
+import com.aeuok.task.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.BeanFactory;
@@ -11,8 +12,8 @@ import java.util.concurrent.*;
 /**
  * @author: CQ
  */
-public class TaskFactory {
-    private static final Logger log = LoggerFactory.getLogger(TaskFactory.class);
+public class TaskContainerFactory {
+    private static final Logger log = LoggerFactory.getLogger(TaskContainerFactory.class);
     private BeanFactory beanFactory;
 
     /**
@@ -41,7 +42,7 @@ public class TaskFactory {
      */
     private boolean wait;
 
-    public TaskFactory(BeanFactory beanFactory) {
+    protected TaskContainerFactory(BeanFactory beanFactory) {
         this.beanFactory = beanFactory;
     }
 

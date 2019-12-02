@@ -7,7 +7,7 @@ import java.lang.annotation.*;
 /**
  * @author: CQ
  */
-@Target({ElementType.FIELD, ElementType.ANNOTATION_TYPE})
+@Target({ElementType.FIELD})
 @Retention(RetentionPolicy.RUNTIME)
 @Inherited
 @Documented
